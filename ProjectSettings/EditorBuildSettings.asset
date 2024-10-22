@@ -4,5 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 8d9c939f980a13f429d44f0ee310e0db
+  - enabled: 1
+    path: Assets/Scenes/Poziom1.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/Poziom2.unity
+    guid: 215dc9cccbd8b2643833aa4dfcc30f2e
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

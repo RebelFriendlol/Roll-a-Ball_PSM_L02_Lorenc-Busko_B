@@ -1,39 +1,63 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; 
+using UnityEngine.SceneManagement; 
 
 public class collectable : MonoBehaviour
 {
     public float xAngle, yAngle, zAngle;
-    
+    public Text Scoretext;  
+    public Text WinText;   
+    private bool isPaused = false; 
+    public Button nextstage;
 
-    // Start is called before the first frame update
     void Start()
     {
-
+        WinText.text = ""; 
+        nextstage.gameObject.SetActive(false); 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        transform.Rotate(xAngle * Time.deltaTime, yAngle * Time.deltaTime, zAngle * Time.deltaTime, Space.Self);
-
         
-
-
+        transform.Rotate(xAngle * Time.deltaTime, yAngle * Time.deltaTime, zAngle * Time.deltaTime, Space.Self);
     }
 
+    private void TogglePause()
+    {
+        isPaused = !isPaused;
+
+        if (isPaused)
+        {
+            Time.timeScale = 0.0f; 
+        }
+        else
+        {
+            Time.timeScale = 1.0f; 
+        }
+    }
 
     void OnTriggerEnter(Collider collision)
     {
-        collision.gameObject.GetComponent<MovementController>().score += 1;
-        Debug.Log("Masz: " + collision.gameObject.GetComponent<MovementController>().score + " punktów.");
+        
+        var movementController = collision.gameObject.GetComponent<MovementController>();
+        movementController.score += 1; 
 
-        if (collision.gameObject.GetComponent<MovementController>().score == 3)
+        
+        Scoretext.text = "Score: " + movementController.score;
+
+       
+        if (movementController.score == 3)
         {
+            TogglePause();
+            WinText.text = "ESSA";
             Debug.Log("Brawo zdoby³eœ wszystkie punkty!");
+            nextstage.gameObject.SetActive(true); 
+
         }
 
+        
         Destroy(gameObject);
     }
 }
