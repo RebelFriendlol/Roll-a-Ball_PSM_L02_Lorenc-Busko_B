@@ -11,11 +11,13 @@ public class collectable : MonoBehaviour
     public Text WinText;   
     private bool isPaused = false; 
     public Button nextstage;
+    AudioSource audioData;
 
     void Start()
     {
         WinText.text = ""; 
-        nextstage.gameObject.SetActive(false); 
+        nextstage.gameObject.SetActive(false);
+        audioData = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -38,9 +40,16 @@ public class collectable : MonoBehaviour
         }
     }
 
+
+    public void LoadNextStage()
+    {
+        Time.timeScale = 1f;   
+        SceneManager.LoadScene(2);    
+    }
+
     void OnTriggerEnter(Collider collision)
     {
-        
+        audioData.Play();
         var movementController = collision.gameObject.GetComponent<MovementController>();
         movementController.score += 1; 
 
@@ -57,7 +66,8 @@ public class collectable : MonoBehaviour
 
         }
 
-        
-        Destroy(gameObject);
+
+        GetComponent<Renderer>().enabled = false; // Hide the object visually
+        GetComponent<Collider>().enabled = false; // Disable its collider
     }
 }

@@ -11,12 +11,13 @@ public class poziom2collectable : MonoBehaviour
     public Text WinText;
     private bool isPaused = false;
     public Button nextstage;
+    AudioSource audioData;
 
     void Start()
     {
         WinText.text = "";
         nextstage.gameObject.SetActive(false);
-       
+        audioData = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -39,13 +40,20 @@ public class poziom2collectable : MonoBehaviour
         }
     }
 
+
+    public void LoadNextStage()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(3);
+    }
+
     void OnTriggerEnter(Collider collision)
     {
 
         var movementController = collision.gameObject.GetComponent<MovementController>();
         movementController.score += 1;
 
-
+        audioData.Play();
         Scoretext.text = "Score: " + movementController.score;
 
 
@@ -59,6 +67,7 @@ public class poziom2collectable : MonoBehaviour
         }
 
 
-        Destroy(gameObject);
+        GetComponent<Renderer>().enabled = false; 
+        GetComponent<Collider>().enabled = false; 
     }
 }

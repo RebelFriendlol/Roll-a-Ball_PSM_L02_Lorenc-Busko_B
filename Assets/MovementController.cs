@@ -11,17 +11,18 @@ public class MovementController : MonoBehaviour
     public Rigidbody rb;  
     public int score = 0;  
     private bool w = false, a = false, s = false, d = false, space = false;  
-    private bool isGrounded = false;  
+    private bool isGrounded = false;
+    AudioSource audioData;
 
-    
     public Button nextstage;
     private bool isPaused = false;  
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        nextstage.gameObject.SetActive(false); 
-        nextstage.onClick.AddListener(LoadNextStage); 
+        nextstage.gameObject.SetActive(false);
+        //nextstage.onClick.AddListener(LoadNextStage);
+        audioData = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -45,6 +46,7 @@ public class MovementController : MonoBehaviour
         
         if (space && isGrounded)
         {
+            audioData.Play();
             rb.AddForce(0, jumpthrust, 0, ForceMode.Impulse);
         }
     }
@@ -67,12 +69,21 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    
-    public void LoadNextStage()
+
+    /*public void LoadNextStage()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(2);      
+
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            SceneManager.LoadScene(3); 
+        }
+        else
+        {
+            SceneManager.LoadScene(2); 
+        }
     }
+*/
 
     private void TogglePause()
     {

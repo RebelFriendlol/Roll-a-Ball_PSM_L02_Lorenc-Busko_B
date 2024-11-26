@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class timestart : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
 
     private bool isPaused = false;
     void Start()
@@ -11,7 +11,7 @@ public class timestart : MonoBehaviour
         TogglePause();
     }
 
-    // Update is called once per frame
+ 
     void Update()
     {
         
