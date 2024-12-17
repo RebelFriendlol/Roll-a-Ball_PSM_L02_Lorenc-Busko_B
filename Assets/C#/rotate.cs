@@ -56,19 +56,19 @@ public class collectable : MonoBehaviour
         Scoretext.text = "Score: " + movementController.score;
 
         var checkpointManager = FindObjectOfType<CheckpointManager>();
-        if (checkpointManager != null && movementController.score >= 5) // Wymagana liczba punktów
+        if (checkpointManager != null && movementController.score >= 5)
         {
             checkpointManager.UnlockNextCheckpoint(5);
             checkpointManager.SetCheckpoint();
         }
 
-        if (movementController.score == 3)
+        /*if (movementController.score == 3)
         {
             TogglePause();
             WinText.text = "ESSA";
             Debug.Log("Brawo zdoby³eœ wszystkie punkty!");
             nextstage.gameObject.SetActive(true);
-        }
+        }*/
 
         GetComponent<Renderer>().enabled = false; // Ukryj obiekt
         GetComponent<Collider>().enabled = false; // Wy³¹cz collider

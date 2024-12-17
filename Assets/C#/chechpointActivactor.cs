@@ -4,9 +4,12 @@ public class CheckpointActivator : MonoBehaviour
 {
     private CheckpointManager checkpointManager;
     public Transform checkpoint; // Ten checkpoint, który ma zostaæ aktywowany
+   
 
     void Start()
     {
+        
+
         checkpointManager = FindObjectOfType<CheckpointManager>();
         if (checkpointManager == null)
         {
@@ -25,7 +28,7 @@ public class CheckpointActivator : MonoBehaviour
                 if (activated)
                 {
                     Debug.Log("Checkpoint aktywowany przez gracza.");
-                    // Mo¿esz dodaæ efekty wizualne lub dŸwiêkowe tutaj
+                    
                 }
             }
         }
