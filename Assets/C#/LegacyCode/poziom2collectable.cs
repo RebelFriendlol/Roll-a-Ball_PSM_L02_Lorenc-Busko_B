@@ -9,7 +9,7 @@ public class poziom2collectable : MonoBehaviour
     public float xAngle, yAngle, zAngle;
     public Text Scoretext;
     public Text WinText;
-    private bool isPaused = false;
+    private bool _isPaused = false;
     public Button nextstage;
     AudioSource audioData;
 
@@ -28,9 +28,9 @@ public class poziom2collectable : MonoBehaviour
 
     private void TogglePause()
     {
-        isPaused = !isPaused;
+        _isPaused = !_isPaused;
 
-        if (isPaused)
+        if (_isPaused)
         {
             Time.timeScale = 0.0f;
         }

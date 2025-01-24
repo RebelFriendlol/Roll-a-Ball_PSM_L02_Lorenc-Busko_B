@@ -1,26 +1,30 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class koniecgry : MonoBehaviour
+public class KoniecGry : MonoBehaviour
 {
-    public Button wyjdzzgry;
-    
-    void Start()
-    {
-        wyjdzzgry.onClick.AddListener(Exit);
-    }
+    [Tooltip("Numer sceny do za³adowania lub jej nazwa.")]
+    public string s_sceneName;
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
         
+        if (other.CompareTag("Player"))
+        {
+         
+            LoadScene();
+        }
     }
 
-    public void Exit()
+    private void LoadScene()
     {
-        Application.Quit();
+        if (!string.IsNullOrEmpty(s_sceneName))
+        {
+            SceneManager.LoadScene(s_sceneName);
+        }
+        else
+        {
+            Debug.LogError("Nie ustawiono nazwy sceny w inspectorze!");
+        }
     }
 }

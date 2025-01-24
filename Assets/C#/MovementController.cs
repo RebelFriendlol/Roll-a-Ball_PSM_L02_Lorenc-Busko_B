@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events; // Dodajemy UnityEvent
 
 public class MovementController : MonoBehaviour
 {
     public float thrust = 10f;
     public float jumpthrust = 10f;
     public Rigidbody rb;
-    public Transform cameraTransform;  // Referencja do kamery
+    public Transform cameraTransform;
     public int score = 0;
-    private bool isGrounded = false;
-    private AudioSource audioData;
-
+    private bool _isGrounded = false;
+    private AudioSource _audioData;
 
     public Button nextstage;
+    public UnityEvent onScoreUpdated; // Dodajemy event
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         nextstage.gameObject.SetActive(false);
-        audioData = GetComponent<AudioSource>();
+        _audioData = GetComponent<AudioSource>();
 
         if (cameraTransform == null)
         {
@@ -29,15 +30,12 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && _isGrounded)
         {
             Jump();
         }
-
-       
-
     }
 
     void FixedUpdate()
@@ -45,37 +43,28 @@ public class MovementController : MonoBehaviour
         Move();
     }
 
-
-   
-
-   
-        private void Move()
+    private void Move()
     {
-        // Pobierz ruch w osi X i Z na podstawie wciœniêtych klawiszy
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        // Kierunek ruchu w przestrzeni kamery
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
-        // Ustaw wektory tylko w p³aszczyŸnie poziomej
         forward.y = 0;
         right.y = 0;
 
         forward.Normalize();
         right.Normalize();
 
-        // Oblicz kierunek ruchu
         Vector3 moveDirection = (forward * vertical + right * horizontal).normalized;
 
-        // Dodaj si³ê w kierunku ruchu
         rb.AddForce(moveDirection * thrust);
     }
 
     private void Jump()
     {
-        audioData.Play();
+        _audioData.Play();
         rb.AddForce(Vector3.up * jumpthrust, ForceMode.Impulse);
     }
 
@@ -83,7 +72,7 @@ public class MovementController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            _isGrounded = true;
         }
     }
 
@@ -91,12 +80,16 @@ public class MovementController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false;
+            _isGrounded = false;
         }
     }
 
-    
-
-   
+    public void UpdateScore(int amount)
+    {
+        score += amount;
+       Licznik.Instance.AddScore(amount); // Aktualizacja wyniku w GameManagerze
+        Debug.Log("UpdateScore called. Amount: " + amount + ", New Score: " + score);
+        onScoreUpdated?.Invoke();
+    }
 
 }

@@ -1,28 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CheckpointManager : MonoBehaviour
 {
-    public List<Transform> checkpoints; // Lista wszystkich checkpointów
-    public Transform currentCheckpoint; // Aktualny checkpoint
-    private int unlockedCheckpoints = 0; // Liczba odblokowanych checkpointów
-    public GameObject player; // Referencja do gracza
+    public List<Transform> checkpoints;
+    public Transform currentCheckpoint;
+    private int _unlockedCheckpoints = 0;
+    public GameObject player;
+
+    // Dodajemy listê do przechowywania aktywowanych checkpointów
+    private List<bool> activatedCheckpoints;
+
+    // Dodajemy zmienn¹ do œledzenia kosztu aktywacji
+    private int checkpointCost = 1;
 
     void Start()
     {
+        activatedCheckpoints = new List<bool>(new bool[checkpoints.Count]); // Zainicjowanie listy z wartoœciami false
+
         if (checkpoints.Count > 0)
         {
-            currentCheckpoint = checkpoints[0]; // Ustaw pierwszy checkpoint jako domyœlny
+            currentCheckpoint = checkpoints[0];
             MovePlayerToCheckpoint();
         }
     }
 
     public void UnlockNextCheckpoint(int scoreCost)
     {
-        if (unlockedCheckpoints + 1 < checkpoints.Count) // SprawdŸ, czy istnieje kolejny checkpoint
+        if (_unlockedCheckpoints + 1 < checkpoints.Count)
         {
-            unlockedCheckpoints++;
-            Debug.Log("Odblokowano nowy checkpoint!");
+            _unlockedCheckpoints++;
+            Debug.Log($"Odblokowano nowy checkpoint! Koszt: {scoreCost} punktów.");
         }
         else
         {
@@ -32,9 +41,9 @@ public class CheckpointManager : MonoBehaviour
 
     public void SetCheckpoint()
     {
-        if (unlockedCheckpoints < checkpoints.Count)
+        if (_unlockedCheckpoints < checkpoints.Count)
         {
-            currentCheckpoint = checkpoints[unlockedCheckpoints];
+            currentCheckpoint = checkpoints[_unlockedCheckpoints];
             Debug.Log("Ustawiono nowy aktualny checkpoint.");
         }
     }
@@ -54,24 +63,62 @@ public class CheckpointManager : MonoBehaviour
 
     public bool TryActivateCheckpoint(Transform checkpoint, MovementController player)
     {
-        if (player.score >= 1)
+        int checkpointIndex = checkpoints.IndexOf(checkpoint);
+
+        if (checkpointIndex == -1)
         {
-            player.score -= 1; // Odejmij punkty
-            currentCheckpoint = checkpoint; // Ustaw jako aktualny checkpoint
-            Debug.Log("Checkpoint aktywowany!");
+            Debug.LogWarning("Nie znaleziono checkpointa!");
+            return false;
+        }
+
+        // SprawdŸ, czy checkpoint zosta³ ju¿ aktywowany
+        if (activatedCheckpoints[checkpointIndex])
+        {
+            Debug.Log("Ten checkpoint zosta³ ju¿ aktywowany!");
+            return false;
+        }
+
+        if (player.score >= checkpointCost)
+        {
+            player.score -= checkpointCost;
+            currentCheckpoint = checkpoint;
+            activatedCheckpoints[checkpointIndex] = true; // Oznacz checkpoint jako aktywowany
+            Debug.Log($"Checkpoint aktywowany! Koszt: {checkpointCost}");
+
+            // Zwiêkszenie kosztu kolejnego checkpointa
+            checkpointCost++;
+
+            // Aktualizacja Scoretext
+            var scoreText = FindObjectOfType<Text>();
+            if (scoreText != null)
+            {
+                scoreText.text = "Score: " + player.score;
+            }
+
             return true;
         }
         else
         {
-            Debug.Log("Za ma³o punktów, aby aktywowaæ checkpoint!");
+            Debug.Log($"Za ma³o punktów, aby aktywowaæ checkpoint! Potrzebujesz: {checkpointCost}");
             return false;
         }
     }
 
     public void ActivateCheckpoint(Transform checkpoint)
     {
-        currentCheckpoint = checkpoint;  // Ustawia aktualny checkpoint na ten, który zosta³ aktywowany
+        currentCheckpoint = checkpoint;
+    }
+
+    public bool IsCheckpointActivated(int checkpointIndex)
+    {
+        if (checkpointIndex >= 0 && checkpointIndex < activatedCheckpoints.Count)
+        {
+            return activatedCheckpoints[checkpointIndex];
+        }
+
+        return false;
     }
 
 
 }
+
